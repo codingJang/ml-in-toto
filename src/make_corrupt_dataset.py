@@ -3,7 +3,7 @@ from torchvision import datasets, transforms
 import os
 import struct
 import numpy as np
-
+import gzip
 
 def corrupt_and_save_mnist(original_root, corrupted_root):
     # Load original MNIST datasets
@@ -32,17 +32,29 @@ def corrupt_and_save_mnist(original_root, corrupted_root):
             imgpath.write(struct.pack('>IIII', 2051, len(images), 28, 28))
             imgpath.write(images.numpy().tobytes())
 
+    # Function to compress the files into .gz format
+    def compress_file(file_path):
+        with open(file_path, 'rb') as f_in:
+            with gzip.open(file_path + '.gz', 'wb') as f_out:
+                f_out.writelines(f_in)
+
     # Save the train and test datasets in the IDX format
-    os.makedirs(corrupted_root, exist_ok=True)
-    save_idx_format(train_dataset.data, train_dataset.targets,
-                    os.path.join(corrupted_root, 'MNIST', 'raw', 'train-images-idx3-ubyte'),
-                    os.path.join(corrupted_root, 'MNIST', 'raw', 'train-labels-idx1-ubyte'))
-    save_idx_format(test_dataset.data, test_dataset.targets,
-                    os.path.join(corrupted_root, 'MNIST', 'raw', 't10k-images-idx3-ubyte'),
-                    os.path.join(corrupted_root, 'MNIST', 'raw', 't10k-labels-idx1-ubyte'))
+    os.makedirs(os.path.join(corrupted_root, 'MNIST', 'raw'), exist_ok=True)
+    train_images_path = os.path.join(corrupted_root, 'MNIST', 'raw', 'train-images-idx3-ubyte')
+    train_labels_path = os.path.join(corrupted_root, 'MNIST', 'raw', 'train-labels-idx1-ubyte')
+    test_images_path = os.path.join(corrupted_root, 'MNIST', 'raw', 't10k-images-idx3-ubyte')
+    test_labels_path = os.path.join(corrupted_root, 'MNIST', 'raw', 't10k-labels-idx1-ubyte')
 
-    print("Corrupted MNIST dataset created and saved in IDX format.")
+    save_idx_format(train_dataset.data, train_dataset.targets, train_images_path, train_labels_path)
+    save_idx_format(test_dataset.data, test_dataset.targets, test_images_path, test_labels_path)
 
+    # Compress the files
+    compress_file(train_images_path)
+    compress_file(train_labels_path)
+    compress_file(test_images_path)
+    compress_file(test_labels_path)
+
+    print("Corrupted MNIST dataset created, saved in IDX format, and compressed into .gz files.")
 
 if __name__ == '__main__':
     # Specify the paths
