@@ -19,7 +19,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python check_c2pa_metadata.py <file_path>")
         sys.exit(1)
-
+ 
     file_path = sys.argv[1]
     if check_c2pa_metadata(file_path):
         sys.exit(0)
