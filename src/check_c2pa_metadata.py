@@ -1,6 +1,7 @@
 import sys
 import c2pa
 
+
 def check_c2pa_metadata(file_path):
     try:
         reader = c2pa.Reader(file_path)
