@@ -1,0 +1,6 @@
+{
+    "test_loss": 0.05568001489639282,
+    "correct_number_images": 9843,
+    "total_number_images": 10000,
+    "percent_correct": 98.43
+}
