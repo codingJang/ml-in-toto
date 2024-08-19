@@ -11,41 +11,76 @@ def main():
     key_alice = load_pem_private_key(f.read(), None)
 
   signer_alice = CryptoSigner(key_alice)
-  # Fetch and load Bob's and Carl's public keys
-  # to specify that they are authorized to perform certain step in the layout
-  key_bob  = load_public_key_from_file("../functionary_bob/bob.pub")
-  key_carl  = load_public_key_from_file("../functionary_carl/carl.pub")  
+  
+  # Fetch and load Bob's, Carl's, Diana's, and Elenor's public keys
+  key_bob = load_public_key_from_file("../Bob/bob.pub")
+  key_carl = load_public_key_from_file("../Carl/carl.pub")
+  key_diana = load_public_key_from_file("../Diana/diana.pub")
+  key_elenor = load_public_key_from_file("../Elenor/elenor.pub")
 
   layout = Layout.read({
       "_type": "layout",
       "keys": {
           key_bob["keyid"]: key_bob,
           key_carl["keyid"]: key_carl,
+          key_diana["keyid"]: key_diana,
+          key_elenor["keyid"]: key_elenor,
       },
       "steps": [{
           "name": "clone",
           "expected_materials": [],
-          "expected_products": [["CREATE", "demo-project/foo.py"], ["DISALLOW", "*"]],
+          "expected_products": [["CREATE", "mnist-project/net.py"], ["CREATE", "mnist-project/train.py"], ["DISALLOW", "*"]],
           "pubkeys": [key_bob["keyid"]],
           "expected_command": [
               "git",
               "clone",
-              "https://github.com/in-toto/demo-project.git"
+              "https://github.com/codingJang/mnist-project.git"
           ],
           "threshold": 1,
         },{
-          "name": "update-version",
-          "expected_materials": [["MATCH", "demo-project/*", "WITH", "PRODUCTS",
+          "name": "train",
+          "expected_materials": [["MATCH", "mnist-project/*", "WITH", "PRODUCTS",
                                 "FROM", "clone"], ["DISALLOW", "*"]],
           "expected_products": [["MODIFY", "demo-project/foo.py"], ["DISALLOW", "*"]],
           "pubkeys": [key_bob["keyid"]],
           "expected_command": [],
           "threshold": 1,
         },{
+          "name": "update-version",
+          "expected_materials": [["MATCH", "mnist-project/*", "WITH", "PRODUCTS",
+                                "FROM", "clone"], ["DISALLOW", "*"]],
+          "expected_products": [["MODIFY", "demo-project/foo.py"], ["DISALLOW", "*"]],
+          "pubkeys": [key_bob["keyid"]],
+          "expected_command": [],
+          "threshold": 1,
+        },{
+          "name": "update-version",
+          "expected_materials": [["MATCH", "mnist-project/*", "WITH", "PRODUCTS",
+                                "FROM", "clone"], ["DISALLOW", "*"]],
+          "expected_products": [["MODIFY", "demo-project/foo.py"], ["DISALLOW", "*"]],
+          "pubkeys": [key_bob["keyid"]],
+          "expected_command": [],
+          "threshold": 1,
+        },{
+          "name": "test",
+          "expected_materials": [
+            ["MATCH", "demo-project/*", "WITH", "PRODUCTS", "FROM", "update-version"], 
+            ["DISALLOW", "*"],
+          ],
+          "expected_products": [
+              ["MODIFY", "demo-project/tests/test_foo.py"], ["DISALLOW", "*"],
+          ],
+          "pubkeys": [key_diana["keyid"]],
+          "expected_command": [
+              "pytest",
+              "demo-project/tests",
+          ],
+          "threshold": 1,
+        },{
           "name": "package",
           "expected_materials": [
             ["MATCH", "demo-project/*", "WITH", "PRODUCTS", "FROM",
-             "update-version"], ["DISALLOW", "*"],
+             "test"], ["DISALLOW", "*"],
           ],
           "expected_products": [
               ["CREATE", "demo-project.tar.gz"], ["DISALLOW", "*"],
@@ -60,14 +95,29 @@ def main():
               "demo-project",
           ],
           "threshold": 1,
+        },{
+          "name": "sign-package",
+          "expected_materials": [
+            ["MATCH", "demo-project.tar.gz", "WITH", "PRODUCTS", "FROM", "package"], 
+            ["DISALLOW", "*"],
+          ],
+          "expected_products": [
+              ["MODIFY", "demo-project.tar.gz.sig"], ["DISALLOW", "*"],
+          ],
+          "pubkeys": [key_elenor["keyid"]],
+          "expected_command": [
+              "gpg",
+              "--output",
+              "demo-project.tar.gz.sig",
+              "--sign",
+              "demo-project.tar.gz",
+          ],
+          "threshold": 1,
         }],
       "inspect": [{
           "name": "untar",
           "expected_materials": [
               ["MATCH", "demo-project.tar.gz", "WITH", "PRODUCTS", "FROM", "package"],
-              # FIXME: If the routine running inspections would gather the
-              # materials/products to record from the rules we wouldn't have to
-              # ALLOW other files that we aren't interested in.
               ["ALLOW", ".keep"],
               ["ALLOW", "alice.pub"],
               ["ALLOW", "root.layout"],
@@ -76,7 +126,6 @@ def main():
           ],
           "expected_products": [
               ["MATCH", "demo-project/foo.py", "WITH", "PRODUCTS", "FROM", "update-version"],
-              # FIXME: See expected_materials above
               ["ALLOW", "demo-project/.git/*"],
               ["ALLOW", "demo-project.tar.gz"],
               ["ALLOW", ".keep"],
