@@ -17,11 +17,11 @@ def main():
   key_bob = load_public_key_from_file("../Bob/bob.pub")
   key_carl = load_public_key_from_file("../Carl/carl.pub")
   key_diana = load_public_key_from_file("../Diana/diana.pub")
-  key_elenor = load_public_key_from_file("../Elenor/elenor.pub")
+
   print(key_bob)
 
   layout = Layout()
-  for key in [key_bob, key_carl, key_diana, key_elenor]:
+  for key in [key_alice, key_bob, key_carl, key_diana]:
     layout.add_functionary_key(key) ### ?
   layout.set_relative_expiration(months=4)
 
@@ -56,7 +56,7 @@ def main():
   train_model.add_product_rule_from_string("DISALLOW *")
 
   test_model = Step(name="test-model")
-  test_model.pubkeys = [key_bob['keyid']]
+  test_model.pubkeys = [key_carl['keyid']]
   test_model.set_expected_command_from_string("python mnist-test/src/test.py")
   test_model.add_material_rule_from_string("REQUIRE mnist-test/src/test.py")
   test_model.add_material_rule_from_string("MATCH mnist-test/src/net.py WITH PRODUCTS FROM train-model")
@@ -69,7 +69,7 @@ def main():
   test_model.add_product_rule_from_string("DISALLOW *")
 
   distribute = Step(name="distribute")
-  distribute.pubkeys = [key_bob['keyid']]
+  distribute.pubkeys = [key_diana['keyid']]
   distribute.set_expected_command_from_string("python mnist-dist/src/dist.py")
   distribute.add_material_rule_from_string("REQUIRE mnist-dist/src/dist.py")
   distribute.add_material_rule_from_string("REQUIRE mnist-dist/src/app.py")

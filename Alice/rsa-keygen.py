@@ -4,9 +4,9 @@ from cryptography.hazmat.backends import default_backend
 import os
 
 # Define the directory where you want to save the keys
-directory = "./Elenor"
-private_key_filename = 'elenor'
-public_key_filename = 'elenor.pub'
+directory = "./Alice"
+private_key_filename = 'alice'
+public_key_filename = 'alice.pub'
 
 # Ensure the directory exists
 os.makedirs(directory, exist_ok=True)
