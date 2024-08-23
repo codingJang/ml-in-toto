@@ -1,5 +1,5 @@
 cd Alice
-python create-layout.py
+python create_layout.py
 
 in-toto-record start --step-name make-dataset --use-dsse --signing-key alice --materials mnist-prep/src/*
 cd mnist-prep/
