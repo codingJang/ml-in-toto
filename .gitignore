@@ -163,6 +163,6 @@ cython_debug/
 
 data/
 corrupt_data/
-logs/*
-models/*
+models/
+logs/
 .DS_Store
