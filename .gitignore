@@ -165,4 +165,5 @@ data/
 corrupt_data/
 models/
 logs/
+images/
 .DS_Store
