@@ -38,6 +38,7 @@ in-toto-record stop --step-name distribute --use-dsse --signing-key diana --prod
 
 cd ..
 mkdir -p FinalProduct
-cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link FinalProduct
-cd FinalProduct
+cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link FinalProduct/
+cp -r Diana/dist/ FinalProduct/
+cd FinalProduct/
 in-toto-verify -v --layout root.layout --verification-keys alice.pub
