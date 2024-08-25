@@ -36,7 +36,6 @@ For more details on how in-toto works and real-world use cases, you can refer to
    ```bash
    git clone https://github.com/your-repo-url/ml-in-toto.git
    cd ml-in-toto
-   git init
    git submodule update --init
    ```
 
