@@ -26,7 +26,7 @@ For more details on how in-toto works and real-world use cases, you can refer to
 
 ### Prerequisites
 
-- **Python 3.12** or later (tested on Ubuntu 20.04 LTS).
+- **Python 3.8** or later (tested on Ubuntu 20.04 LTS).
 - [Git](https://git-scm.com/) for cloning the repository.
 - Basic understanding of Python and Bash scripting.
 
@@ -34,11 +34,17 @@ For more details on how in-toto works and real-world use cases, you can refer to
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-repo-url/in-toto-ml-workflows.git
-   cd in-toto-ml-workflows
+   git clone https://github.com/your-repo-url/ml-in-toto.git
+   cd ml-in-toto
    ```
 
-2. **Install Required Packages**:
+2. **Setup conda environment**:
+   ```bash
+   conda create -n ml-in-toto python=3.8
+   conda activate ml-in-toto
+   ```
+
+3. **Install Required Packages**:
    ```bash
    pip install -r requirements.txt
    ```
