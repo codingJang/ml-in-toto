@@ -10,3 +10,6 @@
 [submodule "Diana/mnist-dist"]
 	path = Diana/mnist-dist
 	url = git@github.com:codingJang/mnist-dist.git
+[submodule "EndUser/mnist-end-user"]
+	path = EndUser/mnist-end-user
+	url = git@github.com:codingJang/mnist-end-user.git
