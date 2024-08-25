@@ -3,8 +3,8 @@ python create_layout.py
 
 in-toto-record start --step-name make-dataset --use-dsse --signing-key alice --materials mnist-prep/src/*
 cd mnist-prep/
-python src/build_dataset.py
-python src/check_dataset.py
+python src/build_dataset.py --original-root ./data --corrupted-root ./data
+python src/check_dataset.py --root ./data --is-corrupted
 cd ..
 in-toto-record stop --step-name make-dataset --use-dsse --signing-key alice --products mnist-prep/src/* mnist-prep/data/* mnist-prep/corrupt_data/* mnist-prep/images/*
 cp -r mnist-prep/data ../Bob/mnist-train/
@@ -35,10 +35,9 @@ cd mnist-dist/
 python src/dist.py
 cd ..
 in-toto-record stop --step-name distribute --use-dsse --signing-key diana --products mnist-dist/src/* mnist-dist/logs/* mnist-dist/models/* mnist-dist/build/* mnist-dist/dist/*
+cp -r mnist-dist/dist/ EndUser/
 
 cd ..
-mkdir -p FinalProduct
-cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link FinalProduct/
-cp -r Diana/dist/ FinalProduct/
-cd FinalProduct/
-in-toto-verify -v --layout root.layout --verification-keys alice.pub
+cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/
+cd EndUser/
+in-toto-verify -v --layout root.layout --verification-keys alice.pub --inspection-timeout 60
