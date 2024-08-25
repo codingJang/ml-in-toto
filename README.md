@@ -1,113 +1,73 @@
-# C2PA & in-toto Integration for Securing ML Workflows
+# Secure ML Workflows with in-toto
 
-Welcome to the project that integrates C2PA and in-toto to secure machine learning (ML) workflows. This project demonstrates how to use in-toto for verifying steps in an ML pipeline while ensuring the datasets involved are signed and verified using C2PA.
+This repository demonstrates a project utilizing in-toto to enhance the security of machine learning (ML) workflows. The goal is to ensure the integrity and authenticity of datasets and models used in ML pipelines by leveraging the capabilities of in-toto.
 
-## Overview
+## Project Overview
 
-This project aims to secure ML workflows by leveraging:
-- **C2PA (Coalition for Content Provenance and Authenticity)**: A standard for verifying content to mitigate disinformation.
-- **in-toto**: A framework for securing the integrity of software supply chains.
+Supply chain attacks have become a significant threat in the software and ML development landscape. High-profile incidents like the SolarWinds attack and the Log4j vulnerability have shown the devastating impact that compromised supply chains can have on organizations worldwide. These attacks exploit weaknesses in the development process, injecting malicious code or altering critical components that then propagate through the entire supply chain.
 
-The combination of these tools allows us to ensure that datasets and models used in ML workflows are authentic and traceable from creation to deployment.
+To mitigate such risks, companies like SolarWinds have implemented in-toto in their systems. in-toto provides a framework to ensure the integrity and security of every step in a software or ML supply chain. By verifying that each step in the workflow is performed as expected and by authorized parties, in-toto helps prevent unauthorized alterations and ensures the end product is trustworthy.
 
-## Features
+This project leverages in-toto to secure ML workflows, providing a reliable and verifiable process from dataset preparation to model distribution.
 
-- **in-toto Verification**: Ensure that each step in the ML pipeline, from data preparation to model distribution, is securely recorded and verified.
-- **C2PA Integration (Coming Soon)**: Verify that datasets used in the workflow are authentic and signed, ensuring the originality of the data.
+### Workflow Summary
 
-## Installation
+The `run_all.sh` script demonstrates a typical ML pipeline where:
+- **Alice** prepares a dataset.
+- **Bob** trains a model using the dataset.
+- **Carl** tests the model.
+- **Diana** packages the model for distribution.
 
-### Requirements
+The process is tracked using in-toto, and if any step is compromised (e.g., if Alice unknowingly introduces a corrupted dataset), the verification will fail, indicating a problem in the pipeline.
 
-- Python 3.12 (Tested on MacOS and Ubuntu 20.04 LTS)
-- Additional Python packages listed in `requirements.txt`
+For more details on how in-toto works and real-world use cases, you can refer to the official [in-toto friends GitHub page](https://github.com/in-toto/friends), which includes SolarWinds among other users.
 
-### Setup
+## Getting Started
 
-1. **Clone the repository:**
+### Prerequisites
+
+- **Python 3.12** or later (tested on Ubuntu 20.04 LTS).
+- [Git](https://git-scm.com/) for cloning the repository.
+- Basic understanding of Python and Bash scripting.
+
+### Installation
+
+1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/c2pa-in-toto.git
-   cd c2pa-in-toto
+   git clone https://github.com/your-repo-url/in-toto-ml-workflows.git
+   cd in-toto-ml-workflows
    ```
 
-2. **Install dependencies:**
+2. **Install Required Packages**:
    ```bash
    pip install -r requirements.txt
    ```
 
-## Running the Demo
+### Running the Demo
 
-To see the ML workflow verification in action:
+To see a demo of the integration, follow these steps:
 
-1. **Run the demo script:**
+1. **Run the demo**:
    ```bash
    bash run_all.sh
    ```
 
-   This script executes a full ML pipeline, including data preparation, model training, testing, and distribution. in-toto records and verifies each step, ensuring the integrity of the process.
+   This script will execute the entire ML workflow, starting from dataset preparation to model distribution, with in-toto recording each step for verification.
 
-2. **Clean up generated files:**
+2. **Clean up**:
+   After running the demo, you can delete all generated files by executing:
    ```bash
    bash delete.sh
    ```
 
-## Project Structure
+## Limitations and Future Work
 
-Before running `run_all.sh`, the project structure is as follows:
+- **C2PA Integration**: Future work includes integrating C2PA to enhance the provenance and verification of datasets. C2PA will help verify the authenticity of datasets from the point of capture, providing a high-quality data pipeline for ML workflows.
 
-```
-.
-├── Alice
-│   ├── create_layout.py
-│   └── mnist-prep
-│       └── src
-│           ├── build_dataset.py
-│           └── check_dataset.py
-├── Bob
-│   └── mnist-train
-│       └── src
-│           ├── net.py
-│           └── train.py
-├── Carl
-│   └── mnist-test
-│       └── src
-│           ├── net.py
-│           └── test.py
-├── Diana
-│   └── mnist-dist
-│       └── src
-│           ├── app.py
-│           ├── build_dist.sh
-│           └── dist.py
-├── README.md
-├── delete.sh
-├── requirements.txt
-└── run_all.sh
-```
+- **Error Handling**: The current demo does not include robust error handling or rollback mechanisms. This is an area for future enhancement.
 
-After running `run_all.sh`, the structure expands to include generated datasets, models, and verification metadata.
-
-## Known Limitations
-
-- **Shared Test Dataset**: The current demo shares the test dataset with the model trainer, which could introduce bias or overfitting. This is for demonstration purposes and should be avoided in real-world implementations.
-- **C2PA Plugin**: The C2PA plugin for dataset verification is not yet implemented, meaning dataset authenticity cannot yet be verified in this demo.
-- **in-toto Wrapping**: Developers might find wrapping their commands with in-toto cumbersome. Future updates may include a more streamlined process.
-
-## Future Development
-
-- **Implement C2PA Plugin**: Integrate C2PA verification into the workflow.
-- **GUI Installer**: Develop an installer with GUI elements to make verification processes more user-friendly and accessible to end-users.
-
-## Contribution
-
-We welcome contributions from developers interested in enhancing this project. Here’s how you can contribute:
-
-1. **Fork the repository.**
-2. **Create a branch**: `git checkout -b feature-name`.
-3. **Commit your changes**: `git commit -am 'Add new feature'`.
-4. **Push to the branch**: `git push origin feature-name`.
-5. **Submit a pull request**.
+- **Security Expertise Needed**: Although this project aims to enhance security, I am not a security expert. Contributions from security professionals are greatly appreciated to strengthen the integrity and robustness of this project.
 
 ## License
 
-This project is licensed under the Apache License 2.0. You can find the full license [here](LICENSE).
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
