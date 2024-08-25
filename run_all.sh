@@ -1,10 +1,33 @@
+#!/bin/bash
+
+# Check if --corrupt is provided as an argument
+CORRUPT=false
+for arg in "$@"
+do
+    if [ "$arg" == "--corrupt" ]; then
+        CORRUPT=true
+    fi
+done
+
+# Set dataset paths based on whether --corrupt is present
+if [ "$CORRUPT" = true ]; then
+    ORIGINAL_ROOT="./data"
+    CORRUPTED_ROOT="./data"
+    CHECK_CORRUPTED="--is-corrupted"
+else
+    ORIGINAL_ROOT="./data"
+    CORRUPTED_ROOT="./corrupt_data"
+    CHECK_CORRUPTED=""
+fi
+
+# Start executing the script
 cd Alice
 python create_layout.py
 
 in-toto-record start --step-name make-dataset --use-dsse --signing-key alice --materials mnist-prep/src/*
 cd mnist-prep/
-python src/build_dataset.py --original-root ./data --corrupted-root ./data
-python src/check_dataset.py --root ./data --is-corrupted
+python src/build_dataset.py --original-root "$ORIGINAL_ROOT" --corrupted-root "$CORRUPTED_ROOT"
+python src/check_dataset.py --root "$ORIGINAL_ROOT" $CHECK_CORRUPTED
 cd ..
 in-toto-record stop --step-name make-dataset --use-dsse --signing-key alice --products mnist-prep/src/* mnist-prep/data/* mnist-prep/corrupt_data/* mnist-prep/images/*
 cp -r mnist-prep/data ../Bob/mnist-train/

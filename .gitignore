@@ -166,4 +166,8 @@ corrupt_data/
 models/
 logs/
 images/
+*.layout
+*.link
+*.link-unfinished
+EndUser/*.pub
 .DS_Store

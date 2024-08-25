@@ -35,15 +35,13 @@ def main():
   make_dataset.add_material_rule_from_string("DISALLOW *")
   make_dataset.add_product_rule_from_string("ALLOW mnist-prep/src/build_dataset.py")
   make_dataset.add_product_rule_from_string("ALLOW mnist-prep/src/check_dataset.py")
-  # for i in ['train', 't10k']:
-  #   for j in ['images', 'labels']:
-  #     k = 'idx3' if j == 'images' else 'idx1'
-  #     make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/data/MNIST/raw/{i}-{j}-{k}-ubyte")
-  #     make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/data/MNIST/raw/{i}-{j}-{k}-ubyte.gz")
-  #     make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/MNIST/raw/{i}-{j}-{k}-ubyte")
-  #     make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/MNIST/raw/{i}-{j}-{k}-ubyte.gz")
-  # make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/data/*")
-  make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/data/*")
+  for i in ['train', 't10k']:
+    for j in ['images', 'labels']:
+      k = 'idx3' if j == 'images' else 'idx1'
+      make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/data/MNIST/raw/{i}-{j}-{k}-ubyte")
+      make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/data/MNIST/raw/{i}-{j}-{k}-ubyte.gz")
+      make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/MNIST/raw/{i}-{j}-{k}-ubyte")
+      make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/MNIST/raw/{i}-{j}-{k}-ubyte.gz")
   make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/*")
   make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/images/random_mnist_samples.png")
   make_dataset.add_product_rule_from_string("DISALLOW *")
@@ -96,7 +94,7 @@ def main():
 
   inspection = Inspection(name="end-user")
   inspection.set_run_from_string("python src/download_mnist.py")
-  inspection.add_material_rule_from_string("MATCH dist/* WITH PRODUCTS IN mnist-dist/dist/* FROM distribute")
+  inspection.add_material_rule_from_string("MATCH dist/* WITH PRODUCTS IN mnist-dist/ FROM distribute")
   inspection.add_material_rule_from_string("ALLOW src/download_mnist.py")
   inspection.add_material_rule_from_string("ALLOW alice.pub")
   inspection.add_material_rule_from_string("ALLOW root.layout")
