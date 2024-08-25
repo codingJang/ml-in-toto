@@ -18,7 +18,7 @@ The `run_all.sh` script demonstrates a typical ML pipeline where:
 - **Carl** tests the model.
 - **Diana** packages the model for distribution.
 
-The process is tracked using in-toto, and if any step is compromised (e.g., if Alice unknowingly introduces a corrupted dataset), the verification will fail, indicating a problem in the pipeline.
+The process is tracked using in-toto, and if any step is compromised, the verification will fail - indicating a problem in the pipeline. Try `run_all.sh --corrupt` to see what happens if Alice unknowingly introduces a corrupted dataset.
 
 For more details on how in-toto works and real-world use cases, you can refer to the official [in-toto friends GitHub page](https://github.com/in-toto/friends), which includes SolarWinds among other users.
 
@@ -57,7 +57,7 @@ To see a demo of the integration, follow these steps:
 
 1. **Run the demo**:
    ```bash
-   bash run_all.sh
+   bash run_all.sh [--corrupt]
    ```
 
    This script will execute the entire ML workflow, starting from dataset preparation to model distribution, with in-toto recording each step for verification.
