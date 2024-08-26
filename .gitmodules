@@ -1,12 +1,15 @@
 [submodule "Alice/mnist-prep"]
 	path = Alice/mnist-prep
-	url = git@github.com:codingJang/mnist-prep.git
+	url = https://github.com/codingJang/mnist-prep.git
 [submodule "Bob/mnist-train"]
 	path = Bob/mnist-train
-	url = git@github.com:codingJang/mnist-train.git
+	url = https://github.com/codingJang/mnist-train.git
 [submodule "Carl/mnist-test"]
 	path = Carl/mnist-test
-	url = git@github.com:codingJang/mnist-test.git
+	url = https://github.com/codingJang/mnist-test.git
 [submodule "Diana/mnist-dist"]
 	path = Diana/mnist-dist
-	url = git@github.com:codingJang/mnist-dist.git
+	url = https://github.com/codingJang/mnist-dist.git
+[submodule "Carl/mnist-dist"]
+	path = Carl/mnist-dist
+	url = https://github.com/codingJang/mnist-dist.git

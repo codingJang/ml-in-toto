@@ -34,9 +34,8 @@ For more details on how in-toto works and real-world use cases, you can refer to
 
 1. **Clone the Repository, initialize submodules**:
    ```bash
-   git clone https://github.com/your-repo-url/ml-in-toto.git
+   git clone https://github.com/codingJang/ml-in-toto.git
    cd ml-in-toto
-   git init
    git submodule update --init
    ```
 
