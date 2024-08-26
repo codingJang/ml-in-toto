@@ -41,13 +41,8 @@ For more details on how in-toto works and real-world use cases, you can refer to
 
 2. **Setup conda environment**:
    ```bash
-   conda create -n ml-in-toto python=3.8
+   conda env create -f environment.yml
    conda activate ml-in-toto
-   ```
-
-3. **Install Required Packages**:
-   ```bash
-   conda install --file packagelist.txt
    ```
 
 ### Running the Demo
