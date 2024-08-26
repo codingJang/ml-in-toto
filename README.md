@@ -48,7 +48,7 @@ For more details on how in-toto works and real-world use cases, you can refer to
 
 3. **Install Required Packages**:
    ```bash
-   pip install -r requirements.txt
+   conda install --file packagelist.txt
    ```
 
 ### Running the Demo
