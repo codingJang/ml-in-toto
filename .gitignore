@@ -171,3 +171,12 @@ images/
 *.link-unfinished
 EndUser/*.pub
 .DS_Store
+
+Alice/alice
+Alice/alice.pub
+Bob/bob
+Bob/bob.pub
+Carl/carl
+Carl/carl.pub
+Diana/diana
+Diana/diana.pub

@@ -21,6 +21,8 @@ else
 fi
 
 # Start executing the script
+python rsa-keygen.py
+
 cd Alice
 python create_layout.py
 

@@ -29,3 +29,12 @@ rm EndUser/train-model.*.link
 rm EndUser/test-model.*.link
 rm EndUser/distribute.*.link
 rm EndUser/end-user.link
+
+rm Alice/alice
+rm Alice/alice.pub
+rm Bob/bob
+rm Bob/bob.pub
+rm Carl/carl
+rm Carl/carl.pub
+rm Diana/diana
+rm Diana/diana.pub
