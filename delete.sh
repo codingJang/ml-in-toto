@@ -40,4 +40,8 @@ rm Carl/carl.pub
 rm Diana/diana
 rm Diana/diana.pub
 
-rm *.link-unfinished
+rm Alice/.*.link-unfinished
+rm Bob/.*.link-unfinished
+rm Carl/.*.link-unfinished
+rm Diana/.*.link-unfinished
+rm EndUser/.*.link-unfinished

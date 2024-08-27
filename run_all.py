@@ -3,7 +3,6 @@
 import argparse
 import subprocess
 import os
-import shutil
 from pathlib import Path
 import sys
 
@@ -64,8 +63,7 @@ def main():
         "--materials", "mnist-prep/src/*"
     ])
 
-    mnist_prep_dir = alice_dir / "mnist-prep"
-    os.chdir(mnist_prep_dir)
+    os.chdir(alice_dir / "mnist-prep")
     run_command([
         "python", "src/build_dataset.py",
         "--original-root", str(ORIGINAL_ROOT),
@@ -86,11 +84,16 @@ def main():
         "--products", "mnist-prep/src/*", "mnist-prep/data/*", "mnist-prep/corrupt_data/*", "mnist-prep/images/*"
     ])
 
-    # Copy dataset to Bob and Carl
-    bob_mnist_train = bob_dir / "mnist-train"
-    carl_mnist_test = carl_dir / "mnist-test"
-    shutil.copytree(mnist_prep_dir / "data", bob_mnist_train / "data", dirs_exist_ok=True)
-    shutil.copytree(mnist_prep_dir / "data", carl_mnist_test / "data", dirs_exist_ok=True)
+    # Copy dataset to Bob and Carl using rsync
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{alice_dir}/mnist-prep/data/", f"{bob_dir}/mnist-train/data/"
+    ])
+
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{alice_dir}/mnist-prep/data/", f"{carl_dir}/mnist-test/data/"
+    ])
 
     # 3. Bob's operations
     os.chdir(bob_dir)
@@ -102,8 +105,7 @@ def main():
         "--materials", "mnist-train/src/*", "mnist-train/data/*"
     ])
 
-    bob_mnist_train_dir = bob_mnist_train
-    os.chdir(bob_mnist_train_dir)
+    os.chdir(bob_dir / "mnist-train")
     train_command = [
         "python", "src/train.py",
         f"--epochs", str(args.epochs),
@@ -122,10 +124,16 @@ def main():
         "--products", "mnist-train/src/*", "mnist-train/models/*", "mnist-train/data/*"
     ])
 
-    # Copy models to Carl and Diana
-    diana_mnist_dist = diana_dir / "mnist-dist"
-    shutil.copytree(bob_mnist_train_dir / "models", carl_mnist_test / "models", dirs_exist_ok=True)
-    shutil.copytree(bob_mnist_train_dir / "models", diana_mnist_dist / "models", dirs_exist_ok=True)
+    # Copy models to Carl and Diana using rsync
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{bob_dir}/mnist-train/models/", f"{carl_dir}/mnist-test/models/"
+    ])
+
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{bob_dir}/mnist-train/models/", f"{diana_dir}/mnist-dist/models/"
+    ])
 
     # 4. Carl's operations
     os.chdir(carl_dir)
@@ -137,8 +145,7 @@ def main():
         "--materials", "mnist-test/src/*", "mnist-test/data/*", "mnist-test/models/*"
     ])
 
-    carl_mnist_test_dir = carl_mnist_test
-    os.chdir(carl_mnist_test_dir)
+    os.chdir(carl_dir / "mnist-test")
     run_command([
         "python", "src/test.py",
         "--no-mps"
@@ -153,8 +160,11 @@ def main():
         "--products", "mnist-test/src/*", "mnist-test/logs/*"
     ])
 
-    # Copy logs to Diana
-    shutil.copytree(carl_mnist_test_dir / "logs", diana_mnist_dist / "logs", dirs_exist_ok=True)
+    # Copy logs to Diana using rsync
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{carl_dir}/mnist-test/logs/", f"{diana_dir}/mnist-dist/logs/"
+    ])
 
     # 5. Diana's operations
     os.chdir(diana_dir)
@@ -166,8 +176,7 @@ def main():
         "--materials", "mnist-dist/src/*", "mnist-dist/logs/*", "mnist-dist/models/*"
     ])
 
-    diana_mnist_dist_dir = diana_mnist_dist
-    os.chdir(diana_mnist_dist_dir)
+    os.chdir(diana_dir / "mnist-dist")
     run_command([
         "python", "src/dist.py",
         "--threshold", str(THRESHOLD)
@@ -182,27 +191,33 @@ def main():
         "--products", "mnist-dist/src/*", "mnist-dist/logs/*", "mnist-dist/models/*", "mnist-dist/build/*", "mnist-dist/dist/*"
     ])
 
-    # Copy distribution to EndUser
-    shutil.copytree(diana_mnist_dist_dir / "dist", enduser_dir / "dist", dirs_exist_ok=True)
-    shutil.copytree(diana_mnist_dist_dir / "models", enduser_dir / "models", dirs_exist_ok=True)
+    # Copy distribution to EndUser using rsync
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{diana_dir}/mnist-dist/dist/", f"{enduser_dir}/dist/"
+    ])
+
+    run_command([
+        "rsync", "-av", "--checksum", "--progress",
+        f"{diana_dir}/mnist-dist/models/", f"{enduser_dir}/models/"
+    ])
 
     # 6. Final verification and execution at EndUser
     os.chdir(base_dir)
     files_to_copy = [
         alice_dir / "root.layout",
         alice_dir / "alice.pub",
-        alice_dir.glob("make-dataset.*.link"),
-        bob_dir.glob("train-model.*.link"),
-        carl_dir.glob("test-model.*.link"),
-        diana_dir.glob("distribute.*.link"),
+        *alice_dir.glob("make-dataset.*.link"),
+        *bob_dir.glob("train-model.*.link"),
+        *carl_dir.glob("test-model.*.link"),
+        *diana_dir.glob("distribute.*.link"),
     ]
 
-    for item in files_to_copy:
-        if isinstance(item, Path):
-            shutil.copy(item, enduser_dir)
-        else:
-            for file in item:
-                shutil.copy(file, enduser_dir)
+    for file in files_to_copy:
+        run_command([
+            "rsync", "-av", "--checksum", "--progress",
+            str(file), str(enduser_dir)
+        ])
 
     os.chdir(enduser_dir)
     run_command([

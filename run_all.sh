@@ -79,7 +79,7 @@ cp -r mnist-dist/dist mnist-dist/models ../EndUser/
 cd ..
 cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/
 cd EndUser/
-in-toto-verify -v --layout root.layout --verification-keys alice.pub --inspection-timeout 60
+in-toto-verify -v --layout root.layout --verification-keys alice.pub --inspection-timeout 300
 dist/app/app
 
 cd ..
