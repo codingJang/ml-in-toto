@@ -2,7 +2,6 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from securesystemslib.signer import CryptoSigner
 from in_toto.models.layout import Layout, Step, Inspection
 from in_toto.models.metadata import Envelope
-# https://github.com/in-toto/in-toto/issues/663
 from in_toto.models._signer import load_public_key_from_file
 
 def main():
@@ -32,6 +31,7 @@ def main():
   make_dataset.add_material_rule_from_string("ALLOW mnist-prep/src/check_dataset.py")
   make_dataset.add_material_rule_from_string("ALLOW mnist-prep/data/*")
   make_dataset.add_material_rule_from_string("ALLOW mnist-prep/corrupt_data/*")
+  make_dataset.add_material_rule_from_string("ALLOW *.DS_Store")
   make_dataset.add_material_rule_from_string("DISALLOW *")
   make_dataset.add_product_rule_from_string("ALLOW mnist-prep/src/build_dataset.py")
   make_dataset.add_product_rule_from_string("ALLOW mnist-prep/src/check_dataset.py")
@@ -44,6 +44,7 @@ def main():
       make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/MNIST/raw/{i}-{j}-{k}-ubyte.gz")
   make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/corrupt_data/*")
   make_dataset.add_product_rule_from_string(f"CREATE mnist-prep/images/random_mnist_samples.png")
+  make_dataset.add_product_rule_from_string("ALLOW *.DS_Store")
   make_dataset.add_product_rule_from_string("DISALLOW *")
 
   train_model = Step(name="train-model")
@@ -52,11 +53,13 @@ def main():
   train_model.add_material_rule_from_string("ALLOW mnist-train/src/train.py")
   train_model.add_material_rule_from_string("ALLOW mnist-train/src/net.py")
   train_model.add_material_rule_from_string("MATCH data/* IN mnist-train/ WITH PRODUCTS IN mnist-prep/ FROM make-dataset")
+  train_model.add_material_rule_from_string("ALLOW *.DS_Store")
   train_model.add_material_rule_from_string("DISALLOW *")
   train_model.add_product_rule_from_string("CREATE mnist-train/models/mnist_cnn.pt")
   train_model.add_product_rule_from_string("ALLOW mnist-train/src/train.py")
   train_model.add_product_rule_from_string("ALLOW mnist-train/src/net.py")
   train_model.add_product_rule_from_string("MATCH data/* IN mnist-train/ WITH PRODUCTS IN mnist-prep/ FROM make-dataset")
+  train_model.add_product_rule_from_string("ALLOW *.DS_Store")
   train_model.add_product_rule_from_string("DISALLOW *")
 
   test_model = Step(name="test-model")
@@ -66,10 +69,12 @@ def main():
   test_model.add_material_rule_from_string("MATCH src/net.py IN mnist-test/ WITH MATERIALS IN mnist-train/ FROM train-model")
   test_model.add_material_rule_from_string("MATCH data/* IN mnist-test/ WITH PRODUCTS IN mnist-prep/ FROM make-dataset")
   test_model.add_material_rule_from_string("MATCH models/mnist_cnn.pt IN mnist-test/ WITH PRODUCTS IN mnist-train/ FROM train-model")
+  test_model.add_material_rule_from_string("ALLOW *.DS_Store")
   test_model.add_material_rule_from_string("DISALLOW *")
   test_model.add_product_rule_from_string("ALLOW mnist-test/src/test.py")
   test_model.add_product_rule_from_string("MATCH src/net.py IN mnist-test/ WITH PRODUCTS IN mnist-train/ FROM train-model")
   test_model.add_product_rule_from_string("CREATE mnist-test/logs/test_result.json")
+  test_model.add_product_rule_from_string("ALLOW *.DS_Store")
   test_model.add_product_rule_from_string("DISALLOW *")
 
   distribute = Step(name="distribute")
@@ -81,6 +86,7 @@ def main():
   distribute.add_material_rule_from_string("ALLOW mnist-dist/src/build_dist.sh")
   distribute.add_material_rule_from_string("MATCH models/mnist_cnn.pt IN mnist-dist/ WITH PRODUCTS IN mnist-train/ FROM train-model")
   distribute.add_material_rule_from_string("MATCH logs/test_result.json IN mnist-dist/ WITH PRODUCTS IN mnist-test/ FROM test-model")
+  distribute.add_material_rule_from_string("ALLOW *.DS_Store")
   distribute.add_material_rule_from_string("DISALLOW *")
   distribute.add_product_rule_from_string("ALLOW mnist-dist/src/dist.py")
   distribute.add_product_rule_from_string("ALLOW mnist-dist/src/app.py")
@@ -90,20 +96,25 @@ def main():
   distribute.add_product_rule_from_string("MATCH logs/test_result.json IN mnist-dist/ WITH PRODUCTS IN mnist-test/ FROM test-model")
   distribute.add_product_rule_from_string("CREATE mnist-dist/build/*")
   distribute.add_product_rule_from_string("CREATE mnist-dist/dist/*")
+  distribute.add_product_rule_from_string("ALLOW *.DS_Store")
   distribute.add_product_rule_from_string("DISALLOW *")
 
   inspection = Inspection(name="end-user")
   inspection.set_run_from_string("python src/download_mnist.py")
   inspection.add_material_rule_from_string("MATCH dist/* WITH PRODUCTS IN mnist-dist/ FROM distribute")
+  inspection.add_material_rule_from_string("MATCH models/mnist_cnn.pt WITH PRODUCTS IN mnist-train/ FROM train-model")
   inspection.add_material_rule_from_string("ALLOW src/download_mnist.py")
   inspection.add_material_rule_from_string("ALLOW alice.pub")
   inspection.add_material_rule_from_string("ALLOW root.layout")
+  inspection.add_material_rule_from_string("ALLOW *.DS_Store")
   inspection.add_material_rule_from_string("DISALLOW *")
   inspection.add_product_rule_from_string("MATCH data/* WITH PRODUCTS IN mnist-prep/ FROM make-dataset")
   inspection.add_product_rule_from_string("MATCH dist/* WITH PRODUCTS IN mnist-dist/ FROM distribute")
+  inspection.add_product_rule_from_string("MATCH models/mnist_cnn.pt WITH PRODUCTS IN mnist-train/ FROM train-model")
   inspection.add_product_rule_from_string("ALLOW src/download_mnist.py")
   inspection.add_product_rule_from_string("ALLOW alice.pub")
   inspection.add_product_rule_from_string("ALLOW root.layout")
+  inspection.add_product_rule_from_string("ALLOW *.DS_Store")
   inspection.add_product_rule_from_string("DISALLOW *")
 
 

@@ -21,6 +21,7 @@ rm Diana/mnist-dist/app.spec
 rm Diana/distribute.*.link
 
 rm -rf EndUser/dist/
+rm -rf EndUser/models/
 rm -rf EndUser/data/
 rm EndUser/root.layout
 rm EndUser/alice.pub
@@ -38,3 +39,5 @@ rm Carl/carl
 rm Carl/carl.pub
 rm Diana/diana
 rm Diana/diana.pub
+
+rm *.link-unfinished
