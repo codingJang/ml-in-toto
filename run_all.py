@@ -16,7 +16,6 @@ def run_command(command, cwd=None, check=True):
     except subprocess.CalledProcessError as e:
         print(f"Error executing command: {' '.join(command)}")
         print(e)
-        sys.exit(1)
 
 def main():
     # Parse command-line arguments

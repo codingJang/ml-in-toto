@@ -69,6 +69,7 @@ in-toto-record stop --step-name test-model --use-dsse --signing-key carl --produ
 cp -r mnist-test/logs ../Diana/mnist-dist/
 
 cd ../Diana/
+
 in-toto-record start --step-name distribute --use-dsse --signing-key diana --materials mnist-dist/src/* mnist-dist/logs/* mnist-dist/models/*
 cd mnist-dist/
 python src/dist.py --threshold $THRESHOLD
