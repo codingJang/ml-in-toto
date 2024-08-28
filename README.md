@@ -61,7 +61,7 @@ To see a demo of the integration, follow these steps:
    bash run_all.sh [--corrupt] [--epochs N] [--dry-run]
    ```
 
-   This script will execute the entire ML workflow, starting from dataset preparation to model distribution, with in-toto recording each step for verification.
+   This script will execute the entire ML workflow, starting from dataset preparation to model distribution, with in-toto recording each step for verification. `--epochs 1` is enough to give >95% accuracy during test.
 
 2. **Clean up**:
    After running the demo, you can delete all generated files by executing:
