@@ -41,8 +41,14 @@ For more details on how in-toto works and real-world use cases, you can refer to
    ```
 
 2. **Setup conda environment**:
+   For Ubuntu:
    ```bash
    conda env create -f environment.yml
+   conda activate ml-in-toto
+   ```
+   For MacOS:
+   ```bash
+   conda env create -f environment-mac.yml
    conda activate ml-in-toto
    ```
 
