@@ -65,7 +65,7 @@ in-toto-record start --step-name test-model --use-dsse --signing-key carl --mate
 cd mnist-test/
 python src/test.py --no-mps
 cd ..
-in-toto-record stop --step-name test-model --use-dsse --signing-key carl --products mnist-test/src/* mnist-test/logs/*
+in-toto-record stop --step-name test-model --use-dsse --signing-key carl --products mnist-test/src/* mnist-test/data/* mnist-test/models/* mnist-test/logs/*
 cp -r mnist-test/logs ../Diana/mnist-dist/
 
 cd ../Diana/
@@ -80,7 +80,7 @@ cp -r mnist-dist/dist mnist-dist/models ../EndUser/
 cd ..
 cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/
 cd EndUser/
-in-toto-verify -v --layout root.layout --verification-keys alice.pub --inspection-timeout 300
+in-toto-verify -v --layout root.layout --verification-keys alice.pub --inspection-timeout 60
 dist/app/app
 
 cd ..
