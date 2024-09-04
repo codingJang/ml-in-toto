@@ -73,6 +73,8 @@ def main():
   test_model.add_material_rule_from_string("DISALLOW *")
   test_model.add_product_rule_from_string("ALLOW mnist-test/src/test.py")
   test_model.add_product_rule_from_string("MATCH src/net.py IN mnist-test/ WITH PRODUCTS IN mnist-train/ FROM train-model")
+  test_model.add_product_rule_from_string("MATCH data/* IN mnist-test/ WITH PRODUCTS IN mnist-prep/ FROM make-dataset")
+  test_model.add_product_rule_from_string("MATCH models/mnist_cnn.pt IN mnist-test/ WITH PRODUCTS IN mnist-train/ FROM train-model")
   test_model.add_product_rule_from_string("CREATE mnist-test/logs/test_result.json")
   test_model.add_product_rule_from_string("ALLOW *.DS_Store")
   test_model.add_product_rule_from_string("DISALLOW *")
