@@ -75,11 +75,12 @@ cd mnist-dist/
 python src/dist.py --threshold $THRESHOLD
 cd ..
 in-toto-record stop --step-name distribute --use-dsse --signing-key diana --products mnist-dist/src/* mnist-dist/logs/* mnist-dist/models/* mnist-dist/build/* mnist-dist/dist/*
-cp -r mnist-dist/dist mnist-dist/models ../EndUser/
+cp -r mnist-dist/dist ../EndUser/
+cp -r mnist-dist/models ../EndUser/dist/app/
 
 cd ..
 cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/dist/app
 cd EndUser/dist/app
-app
+./app
 
 cd ..
