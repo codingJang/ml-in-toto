@@ -78,8 +78,8 @@ in-toto-record stop --step-name distribute --use-dsse --signing-key diana --prod
 cp -r mnist-dist/dist mnist-dist/models ../EndUser/
 
 cd ..
-cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/
-cd EndUser/
-dist/app/app
+cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/dist/app
+cd EndUser/dist/app
+app
 
 cd ..

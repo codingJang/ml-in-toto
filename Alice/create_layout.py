@@ -102,10 +102,10 @@ def main():
   distribute.add_product_rule_from_string("DISALLOW *")
 
   inspection = Inspection(name="end-user")
-  inspection.set_run_from_string("python src/download_mnist.py")
+  inspection.set_run_from_string("bash src/download_mnist.sh")
   inspection.add_material_rule_from_string("MATCH dist/* WITH PRODUCTS IN mnist-dist/ FROM distribute")
   inspection.add_material_rule_from_string("MATCH models/mnist_cnn.pt WITH PRODUCTS IN mnist-train/ FROM train-model")
-  inspection.add_material_rule_from_string("ALLOW src/download_mnist.py")
+  inspection.add_material_rule_from_string("ALLOW src/download_mnist.sh")
   inspection.add_material_rule_from_string("ALLOW alice.pub")
   inspection.add_material_rule_from_string("ALLOW root.layout")
   inspection.add_material_rule_from_string("ALLOW *.DS_Store")
