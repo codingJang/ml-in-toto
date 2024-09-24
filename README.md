@@ -51,10 +51,15 @@ To see a demo of the integration, follow these steps:
 
 1. **Run the demo**:
    ```bash
-   bash run_all.sh [--corrupt]
+   bash run_all.sh [--corrupt] [--dry-run] [epochs N]
    ```
 
    This script will execute the entire ML workflow, starting from dataset preparation to model distribution, with in-toto recording each step for verification.
+
+   **arguments:**\
+   --corrupt : Alice/data is overwritten with corrupt data. \
+   --dry-run : Skips training by breaking for loop \
+   --epochs N : Run N epochs
 
 2. **Clean up**:
    After running the demo, you can delete all generated files by executing:
