@@ -2,10 +2,18 @@
 
 # Check if --corrupt is provided as an argument
 CORRUPT=false
+DRY_RUN=false
+ARGS=()
+
 for arg in "$@"
 do
     if [ "$arg" == "--corrupt" ]; then
         CORRUPT=true
+    elif [ "$arg" == "--dry-run" ]; then
+        DRY_RUN=true
+        ARGS+=("$arg")
+    else
+        ARGS+=("$arg")  # Collect arguments that are not --corrupt
     fi
 done
 
@@ -18,6 +26,12 @@ else
     ORIGINAL_ROOT="./data"
     CORRUPTED_ROOT="./corrupt_data"
     CHECK_CORRUPTED=""
+fi
+
+if [ "$DRY_RUN" = true ]; then
+    THRESHOLD=50.0
+else
+    THRESHOLD=95.0
 fi
 
 # Start executing the script
@@ -39,7 +53,7 @@ cd ../Bob/
 
 in-toto-record start --step-name train-model --use-dsse --signing-key bob --materials mnist-train/src/* mnist-train/data/*
 cd mnist-train/
-python src/train.py --dry-run --save-model
+python src/train.py "${ARGS[@]}" --save-model
 cd ..
 in-toto-record stop --step-name train-model --use-dsse --signing-key bob --products mnist-train/src/* mnist-train/models/* mnist-train/data/*
 cp -r mnist-train/models ../Carl/mnist-test/
@@ -51,18 +65,21 @@ in-toto-record start --step-name test-model --use-dsse --signing-key carl --mate
 cd mnist-test/
 python src/test.py --no-mps
 cd ..
-in-toto-record stop --step-name test-model --use-dsse --signing-key carl --products mnist-test/src/* mnist-test/logs/*
+in-toto-record stop --step-name test-model --use-dsse --signing-key carl --products mnist-test/src/* mnist-test/data/* mnist-test/models/* mnist-test/logs/*
 cp -r mnist-test/logs ../Diana/mnist-dist/
 
 cd ../Diana/
+
 in-toto-record start --step-name distribute --use-dsse --signing-key diana --materials mnist-dist/src/* mnist-dist/logs/* mnist-dist/models/*
 cd mnist-dist/
-python src/dist.py
+python src/dist.py --threshold $THRESHOLD
 cd ..
 in-toto-record stop --step-name distribute --use-dsse --signing-key diana --products mnist-dist/src/* mnist-dist/logs/* mnist-dist/models/* mnist-dist/build/* mnist-dist/dist/*
-cp -r mnist-dist/dist/ ../EndUser/
+cp -r mnist-dist/dist mnist-dist/models ../EndUser/
 
 cd ..
-cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/
-cd EndUser/
-in-toto-verify -v --layout root.layout --verification-keys alice.pub --inspection-timeout 60
+cp Alice/root.layout Alice/alice.pub Alice/make-dataset.*.link Bob/train-model.*.link Carl/test-model.*.link Diana/distribute.*.link EndUser/dist/app
+cd EndUser/dist/app
+app
+
+cd ..
