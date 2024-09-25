@@ -23,6 +23,8 @@ rm Diana/distribute.*.link
 rm -rf EndUser/dist/
 rm -rf EndUser/models/
 rm -rf EndUser/data/
+rm EndUser/download_mnist.sh
+rm EndUser/run_app.sh
 rm EndUser/root.layout
 rm EndUser/alice.pub
 rm EndUser/make-dataset.*.link
